@@ -1,9 +1,14 @@
+@file:Suppress("UNREACHABLE_CODE")
+
 package com.example.hiltcopy.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -11,12 +16,43 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.hiltcopy.ui.theme.HiltCopyTheme
+import org.orbitmvi.orbit.compose.collectAsState
+
 
 @Composable
 fun MainScreen(
+    viewModel: MainViewModel = hiltViewModel(),
+) {
+    val state : MainState = viewModel.collectAsState().value
+
+    val content = LocalContext.current
+
+    MainScreen(
+        firstNumber = state.firstNumber,
+        secondNumber = state.secondNumber,
+        onFirstNumberChange = viewModel::onFirstNumberChange,
+        onSecondNumberChange = viewModel::onSecondNumberChange,
+        onButtonClick = {}
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen(
+    firstNumber: String,
+    secondNumber: String,
+    onFirstNumberChange: (String) -> Unit,
+    onSecondNumberChange: (String) -> Unit,
+    onButtonClick: () -> Unit,
+//    result: String
 ) {
     Surface {
         Column (
@@ -37,7 +73,7 @@ fun MainScreen(
             }
             Column (
                 modifier = Modifier
-                    .padding(top = 24.dp)
+                    .padding(top = 24.dp, start = 10.dp, end = 10.dp)
                     .fillMaxHeight()
             ){
                 Text(
@@ -45,9 +81,41 @@ fun MainScreen(
                     style = MaterialTheme.typography.headlineMedium
                 )
                 TextField(
-                    value = ,
-                    onValueChange =
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .fillMaxWidth(),
+                    value = firstNumber,
+                    onValueChange = onFirstNumberChange,
+                    visualTransformation = VisualTransformation.None,
+                    shape = RoundedCornerShape(8.dp)
                 )
+                Text(
+                    text = "두번 째 숫자",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                TextField(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .fillMaxWidth(),
+                    value = secondNumber,
+                    onValueChange = onSecondNumberChange,
+                    visualTransformation = VisualTransformation.None,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                Button(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .fillMaxWidth(),
+                    onClick = onButtonClick
+                ) {
+                    Text("계산하기")
+                }
+//                Text(
+//                    text = result,
+//                    style = MaterialTheme.typography.headlineMedium,
+//                    modifier = Modifier.fillMaxWidth(),
+//                    textAlign = TextAlign.Center
+//                )
             }
         }
     }
@@ -57,6 +125,13 @@ fun MainScreen(
 @Composable
 private fun MainScreenPreview() {
     HiltCopyTheme {
-        MainScreen()
+        MainScreen(
+            firstNumber = "11",
+            secondNumber = "22",
+            onFirstNumberChange = { },
+            onSecondNumberChange = { },
+            onButtonClick = { },
+//            result = "100",
+        )
     }
 }
