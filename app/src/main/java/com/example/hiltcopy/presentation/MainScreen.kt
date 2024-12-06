@@ -2,6 +2,8 @@
 
 package com.example.hiltcopy.presentation
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,14 +34,30 @@ fun MainScreen(
 ) {
     val state : MainState = viewModel.collectAsState().value
 
-    val content = LocalContext.current
+    //나중에 사이드 이펙트 쓸때 씀
+//    val content = LocalContext.current
+//    viewModel.collectSideEffect { sideEffect ->
+//        when (sideEffect) {
+//            is LoginSideEffect.Toast -> Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+//            LoginSideEffect.NavigateToMainActivity -> {
+//                context.startActivity(
+//                    Intent(
+//                        context, MainActivity::class.java
+//                    ).apply {
+//                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                    }
+//                )
+//            }
+//        }
+//    }
 
     MainScreen(
         firstNumber = state.firstNumber,
         secondNumber = state.secondNumber,
         onFirstNumberChange = viewModel::onFirstNumberChange,
         onSecondNumberChange = viewModel::onSecondNumberChange,
-        onButtonClick = {}
+        onButtonClick = viewModel::onCombineNumbers,
+        result = state.result
     )
 
 }
@@ -52,7 +70,7 @@ fun MainScreen(
     onFirstNumberChange: (String) -> Unit,
     onSecondNumberChange: (String) -> Unit,
     onButtonClick: () -> Unit,
-//    result: String
+    result: String
 ) {
     Surface {
         Column (
@@ -110,12 +128,12 @@ fun MainScreen(
                 ) {
                     Text("계산하기")
                 }
-//                Text(
-//                    text = result,
-//                    style = MaterialTheme.typography.headlineMedium,
-//                    modifier = Modifier.fillMaxWidth(),
-//                    textAlign = TextAlign.Center
-//                )
+                Text(
+                    text = result,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -131,7 +149,7 @@ private fun MainScreenPreview() {
             onFirstNumberChange = { },
             onSecondNumberChange = { },
             onButtonClick = { },
-//            result = "100",
+            result = "100",
         )
     }
 }
