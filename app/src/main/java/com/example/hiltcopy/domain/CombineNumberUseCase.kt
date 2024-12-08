@@ -4,7 +4,8 @@ interface CombineNumberUseCase {
 
     suspend operator fun invoke(
         firstNumber: String,
-        secondNumber: String
+        secondNumber: String,
+        operation: String
     ):String
 
 }

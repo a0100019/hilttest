@@ -4,11 +4,13 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import com.example.hiltcopy.domain.CombineNumberUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
 import org.orbitmvi.orbit.syntax.simple.blockingIntent
 import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
@@ -18,9 +20,23 @@ class MainViewModel @Inject constructor(
     private val combineNumberUseCase: CombineNumberUseCase
 ) : ViewModel(), ContainerHost<MainState, MainSideEffect> {
 
-    override val container: Container<MainState, MainSideEffect> = container(
-        initialState = MainState()
+    //sideEffect 는 토스트, 네비게이션과 같이 단발성 이벤트 처리하기 위함.
+    override val container: Container<MainState, MainSideEffect> =
+        container(
+            //state 사용 하기 위한 것
+            initialState = MainState(),
+            //toast 사용 하기 위한 것
+            buildSettings = {
+                this.exceptionHandler = CoroutineExceptionHandler {_, throwable ->
+                    intent { postSideEffect(MainSideEffect.Toast(throwable.message.orEmpty())) }
+                }
+            }
     )
+
+    // 이 안에 함수 넣으면 그 함수는 뷰모델 생성 되자마자 실행
+    init {
+
+    }
 
     //아이디 입력 가능하게 하는 코드
     @OptIn(OrbitExperimental::class)
@@ -41,12 +57,20 @@ class MainViewModel @Inject constructor(
 
     }
 
-    // 버튼 클릭 시 두 숫자 합치기
+    @OptIn(OrbitExperimental::class)
+    fun onOperationChange(operation: String) = blockingIntent {
+        reduce {
+            state.copy(operation = operation)
+        }
+    }
+
+    // 버튼 클릭 시 계산
     fun onCombineNumbers() = intent {
-        val combinedValue = combineNumberUseCase(state.firstNumber, state.secondNumber)
+        val combinedValue = combineNumberUseCase(state.firstNumber, state.secondNumber, state.operation)
         reduce {
             state.copy(result = combinedValue) // 결과를 상태에 저장
         }
+        postSideEffect(MainSideEffect.Toast(message = "계산 완료!"))
     }
 
 }
@@ -56,11 +80,13 @@ class MainViewModel @Inject constructor(
 data class MainState(
     val firstNumber:String = "",
     val secondNumber:String = "",
-    val result:String = ""
+    val result:String = "",
+    val operation: String = ""
 )
 
 //상태와 관련없는 것
 sealed interface MainSideEffect{
     class Toast(val message:String):MainSideEffect
+    //screen도 되고 엑티비티도 됨
 //    object NavigateToMainActivity:MainSideEffect
 }

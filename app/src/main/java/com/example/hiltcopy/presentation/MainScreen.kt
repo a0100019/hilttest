@@ -2,7 +2,6 @@
 
 package com.example.hiltcopy.presentation
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.hiltcopy.ui.theme.HiltCopyTheme
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 
 @Composable
@@ -35,10 +35,10 @@ fun MainScreen(
     val state : MainState = viewModel.collectAsState().value
 
     //나중에 사이드 이펙트 쓸때 씀
-//    val content = LocalContext.current
-//    viewModel.collectSideEffect { sideEffect ->
-//        when (sideEffect) {
-//            is LoginSideEffect.Toast -> Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+    val context = LocalContext.current
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is MainSideEffect.Toast -> Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
 //            LoginSideEffect.NavigateToMainActivity -> {
 //                context.startActivity(
 //                    Intent(
@@ -48,8 +48,8 @@ fun MainScreen(
 //                    }
 //                )
 //            }
-//        }
-//    }
+        }
+    }
 
     MainScreen(
         firstNumber = state.firstNumber,
@@ -57,7 +57,9 @@ fun MainScreen(
         onFirstNumberChange = viewModel::onFirstNumberChange,
         onSecondNumberChange = viewModel::onSecondNumberChange,
         onButtonClick = viewModel::onCombineNumbers,
-        result = state.result
+        result = state.result,
+        operation = state.operation,
+        onOperationChange = viewModel::onOperationChange
     )
 
 }
@@ -70,7 +72,9 @@ fun MainScreen(
     onFirstNumberChange: (String) -> Unit,
     onSecondNumberChange: (String) -> Unit,
     onButtonClick: () -> Unit,
-    result: String
+    result: String,
+    operation: String,
+    onOperationChange: (String) -> Unit
 ) {
     Surface {
         Column (
@@ -120,6 +124,19 @@ fun MainScreen(
                     visualTransformation = VisualTransformation.None,
                     shape = RoundedCornerShape(8.dp)
                 )
+                Text(
+                    text = "기호",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                TextField(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .fillMaxWidth(),
+                    value = operation,
+                    onValueChange = onOperationChange,
+                    visualTransformation = VisualTransformation.None,
+                    shape = RoundedCornerShape(8.dp)
+                )
                 Button(
                     modifier = Modifier
                         .padding(top = 8.dp)
@@ -150,6 +167,8 @@ private fun MainScreenPreview() {
             onSecondNumberChange = { },
             onButtonClick = { },
             result = "100",
+            operation = "+",
+            onOperationChange = { }
         )
     }
 }
