@@ -1,4 +1,4 @@
-package com.example.hiltcopy.presentation
+package com.example.hiltcopy.presentation.main
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
@@ -86,7 +86,7 @@ data class MainState(
 
 //상태와 관련없는 것
 sealed interface MainSideEffect{
-    class Toast(val message:String):MainSideEffect
+    class Toast(val message:String): MainSideEffect
     //screen도 되고 엑티비티도 됨
 //    object NavigateToMainActivity:MainSideEffect
 }

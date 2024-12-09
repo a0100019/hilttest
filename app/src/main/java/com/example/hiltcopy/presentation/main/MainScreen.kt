@@ -1,6 +1,6 @@
 @file:Suppress("UNREACHABLE_CODE")
 
-package com.example.hiltcopy.presentation
+package com.example.hiltcopy.presentation.main
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column

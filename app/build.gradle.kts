@@ -84,6 +84,8 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
 
+    implementation(libs.appcompat)
+
     implementation(libs.navigation.compose)
     implementation(libs.hilt.navigation.compose)
 }
