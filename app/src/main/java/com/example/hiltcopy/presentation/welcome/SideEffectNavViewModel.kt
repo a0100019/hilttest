@@ -30,29 +30,39 @@ class SideEffectNavViewModel @Inject constructor(
 
 
 // 화면전환 할지 말지 정하는 코드 작성!!!!!!!!
-    fun onSignUpClick() = intent{
-//        if(state.password != state.repeatPassword){
-//            postSideEffect(SignUpSideEffect.Toast(message = "두 패스워드가 일치하지 않습니다."))
-//            return@intent
-//        }
-//        val isSuccessful = signUpUseCase(
-//            id = state.id,
-//            username = state.username,
-//            password = state.password
-//        ).getOrThrow()
+    fun onMoveSelectClick() = intent{
+        if(state.password != state.repeatPassword){
+            reduce {
+                state.copy(password = "11")
+            }
+            postSideEffect(SideEffectNavSideEffect.Toast(message = "한번 더 눌러주세요."))
+            return@intent
+        } else {
+            postSideEffect(SideEffectNavSideEffect.NavigateToSelectScreen)
+            postSideEffect(SideEffectNavSideEffect.Toast(message = "이동 완료"))
 
-//        if(isSuccessful){
-//            postSideEffect(SideEffectNavSideEffect.NavigateToSelectScreen)
-//        }
+        }
+
+    // state 한번에 바꾸는 법
+//    reduce {
+//        SideEffectNavState(
+//            id = "newId",
+//            username = "newUsername",
+//            password = "새로운 비밀번호",
+//            repeatPassword = "새로운 반복 비밀번호"
+//        )
+//    }
+
     }
+
 }
 
 @Immutable
 data class SideEffectNavState(
     val id: String = "",
     val username: String = "",
-    val password: String = "",
-    val repeatPassword: String = "",
+    val password: String = "1",
+    val repeatPassword: String = "11",
 )
 
 sealed interface SideEffectNavSideEffect {

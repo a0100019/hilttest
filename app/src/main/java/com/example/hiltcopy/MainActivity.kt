@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.example.hiltcopy.presentation.main.MainNavHost
 import com.example.hiltcopy.presentation.main.MainScreen
 import com.example.hiltcopy.ui.theme.HiltCopyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,13 +20,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HiltCopyTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainScreen()
-                }
+                    MainNavHost()
             }
         }
     }

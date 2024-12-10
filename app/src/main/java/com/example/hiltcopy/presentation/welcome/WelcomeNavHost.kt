@@ -18,7 +18,7 @@ fun WelcomeNavHost() {
         composable(route = WelcomeRoute.WelcomeScreen.name) {
             WelcomeScreen(
                 onNavigateToSideEffectNavScreen = {
-                    navController.navigate(route = WelcomeRoute.SelectScreen.name)
+                    navController.navigate(route = WelcomeRoute.SideEffectNavScreen.name)
                 }
             )
         }
@@ -26,7 +26,7 @@ fun WelcomeNavHost() {
         composable(route = WelcomeRoute.SideEffectNavScreen.name) {
             SideEffectNavScreen(
                 onNavigateToSelectScreen = {
-                    navController.navigate(route = WelcomeRoute.SideEffectNavScreen.name)
+                    navController.navigate(route = WelcomeRoute.SelectScreen.name)
                 }
             )
         }
