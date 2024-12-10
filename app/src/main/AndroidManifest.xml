@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:allowBackup="true"
         android:name=".CalculatorApp"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -14,7 +14,7 @@
         android:theme="@style/Theme.HiltCopy"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.welcome.WelcomeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.HiltCopy">
@@ -24,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

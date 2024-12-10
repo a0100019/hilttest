@@ -8,6 +8,8 @@ sealed class WelcomeRoute (
 
     object WelcomeScreen : WelcomeRoute("WelcomeScreen")
 
-    object LoginScreen : WelcomeRoute("LoginScreen")
+    object SideEffectNavScreen : WelcomeRoute("SideEffectNavScreen")
+
+    object SelectScreen : WelcomeRoute("SelectScreen")
 
 }

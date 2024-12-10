@@ -9,18 +9,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.hiltcopy.ui.theme.HiltCopyTheme
 
 @Composable
-fun WelcomeScreen(
-    onNavigateToSideEffectNavScreen: () -> Unit
+fun SideEffectNavScreen(
+    onNavigateToSelectScreen: () -> Unit
 ) {
     Surface {
         Column {
-            Text("환영합니다\nSideEffectNavScreen으로 이동하기")
+            Text("환영합니다")
             Button(
                 onClick = {
-                    onNavigateToSideEffectNavScreen()
+                    onNavigateToSelectScreen()
                 }
             ) {
-                Text("이동하기")
+                Text("SelectScreen으로 이동")
             }
         }
     }
@@ -28,10 +28,10 @@ fun WelcomeScreen(
 
 @Preview
 @Composable
-fun WelcomeScreenPreview() {
+fun SideEffectNavScreenPreview() {
     HiltCopyTheme {
-        WelcomeScreen(
-            onNavigateToSideEffectNavScreen = {}
+        SideEffectNavScreen(
+            onNavigateToSelectScreen = {}
         )
     }
 }
