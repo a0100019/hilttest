@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.hiltcopy.R
+import com.example.hiltcopy.presentation.main.second.TodoScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +39,7 @@ fun MainNavHost() {
                     startDestination = MainRoute.SECOND.route
                 ) {
                     composable(route = MainRoute.SECOND.route) {
-                        SecondScreen()
+                        TodoScreen()
                     }
                     composable(route = MainRoute.THIRD.route) {
                         ThirdScreen()
