@@ -35,6 +35,7 @@ fun TodoScreen(
         todoText = state.todoText,
         onTodoTextChange = viewModel::onTodoTextChange,
         onAddTodoButtonClick = viewModel::addTodo,
+        onDeleteTodoButtonClick = viewModel::deleteTodo,
         todoList = state.todoList
     )
 
@@ -46,6 +47,7 @@ fun TodoScreen(
     todoText: String,
     onTodoTextChange: (String) -> Unit,
     onAddTodoButtonClick: () -> Unit,
+    onDeleteTodoButtonClick: () -> Unit,
     todoList: List<Todo>
 ) {
 
@@ -56,12 +58,11 @@ fun TodoScreen(
                 onValueChange = onTodoTextChange,
                 modifier = Modifier.weight(1f).padding(8.dp)
             )
-            Button(onClick = {
-                onAddTodoButtonClick
-                // todoText 지우는 거 추가
-
-            }) {
+            Button(onClick = onAddTodoButtonClick) {
                 Text("Add")
+            }
+            Button(onClick = onDeleteTodoButtonClick) {
+                Text("Delete")
             }
         }
         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -81,6 +82,7 @@ fun TodoScreenPreview() {
             todoText = "안녕",
             onTodoTextChange = {},
             onAddTodoButtonClick = {},
+            onDeleteTodoButtonClick = {},
             todoList = listOf(
                 Todo(title = "first"),
                 Todo(title = "second"),

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hiltcopy.data.room.Todo
 import com.example.hiltcopy.data.room.TodoDao
+import com.example.hiltcopy.presentation.main.MainSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -22,11 +23,16 @@ import javax.inject.Inject
 @HiltViewModel
 class TodoViewModel @Inject constructor(
     private val todoDao: TodoDao
-) : ViewModel(), ContainerHost<TodoState, Nothing> { // SideEffect를 Nothing으로 지정, 사이드 안 쓸 때!!
+) : ViewModel(), ContainerHost<TodoState, TodoSideEffect> { // SideEffect를 Nothing으로 지정, 사이드 안 쓸 때!!
 
-    override val container: Container<TodoState, Nothing> =
+    override val container: Container<TodoState, TodoSideEffect> =
         container(
-            initialState = TodoState()
+            initialState = TodoState(),
+            buildSettings = {
+                this.exceptionHandler = CoroutineExceptionHandler {_, throwable ->
+                    intent { postSideEffect(TodoSideEffect.Toast(throwable.message.orEmpty())) }
+                }
+            }
         )
 
     // 초기화 시 모든 Todo 데이터를 로드
@@ -44,15 +50,6 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    fun addTodo() = intent {
-        val newTodo = Todo(title = state.todoText)
-        todoDao.insert(newTodo)
-        // 새로 추가된 Todo를 State에 반영
-        reduce {
-            state.copy(todoList = state.todoList + newTodo)
-        }
-    }
-
     //아이디 입력 가능하게 하는 코드
     @OptIn(OrbitExperimental::class)
     fun onTodoTextChange(todoText: String) = blockingIntent {
@@ -61,14 +58,27 @@ class TodoViewModel @Inject constructor(
         }
     }
 
+    fun addTodo() = intent {
+        val newTodo = Todo(title = state.todoText)
+        todoDao.insert(newTodo)
+        // 새로 추가된 Todo를 State에 반영
+        reduce {
+            state.copy(todoList = state.todoList + newTodo)
+            state.copy(todoText = "")
+        }
+    }
 
-//    fun removeTodo(todo: Todo) = intent {
-//        todoDao.delete(todo)
-//        reduce {
-//            state.copy(todoList = state.todoList - todo)
-//        }
-//        postSideEffect(TodoSideEffect.Toast("Todo 삭제 완료!"))
-//    }
+    fun deleteTodo() = intent {
+        //지우는건 primaryKey만 일치하면 뒤는 다 틀려도 지움
+        val deleteTodo = Todo(id = state.todoText.toInt(), title = "기본값없어서 적어줌")
+        todoDao.delete(deleteTodo)
+        reduce {
+            state.copy(todoList = state.todoList - deleteTodo)
+            state.copy(todoText = "")
+        }
+        postSideEffect(TodoSideEffect.Toast(message = "Todo 삭제 완료!"))
+    }
+
 }
 
 // ViewModel에서 관리할 상태
