@@ -19,23 +19,28 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hiltcopy.data.room.Todo
+import com.example.hiltcopy.presentation.main.MainState
+import com.example.hiltcopy.presentation.main.MainViewModel
 import com.example.hiltcopy.ui.theme.HiltCopyTheme
 import org.orbitmvi.orbit.compose.collectAsState
 
 
 @Composable
 fun TodoScreen(
-    viewModel: TodoViewModel = hiltViewModel()
+    viewModel: TodoViewModel = hiltViewModel(),
+    viewModel2: MainViewModel = hiltViewModel()
 ) {
 
     //state 이용
     val state : TodoState = viewModel.collectAsState().value
+    val state2 : MainState = viewModel2.collectAsState().value
 
     TodoScreen(
         todoText = state.todoText,
         onTodoTextChange = viewModel::onTodoTextChange,
         onAddTodoButtonClick = viewModel::addTodo,
         onDeleteTodoButtonClick = viewModel::deleteTodo,
+        onUpdateTodoButtonClick = viewModel::updateTodo,
         todoList = state.todoList
     )
 
@@ -48,6 +53,7 @@ fun TodoScreen(
     onTodoTextChange: (String) -> Unit,
     onAddTodoButtonClick: () -> Unit,
     onDeleteTodoButtonClick: () -> Unit,
+    onUpdateTodoButtonClick: () -> Unit,
     todoList: List<Todo>
 ) {
 
@@ -64,12 +70,28 @@ fun TodoScreen(
             Button(onClick = onDeleteTodoButtonClick) {
                 Text("Delete")
             }
-        }
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(todoList) { todo ->
-                Text(text = todo.title, modifier = Modifier.padding(8.dp))
+            Button(onClick = onUpdateTodoButtonClick) {
+                Text("Update")
             }
         }
+        Row {
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(todoList) { todo ->
+                    Text(text = todo.id.toString(), modifier = Modifier.padding(8.dp))
+                }
+            }
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(todoList) { todo ->
+                    Text(text = todo.title, modifier = Modifier.padding(8.dp))
+                }
+            }
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(todoList) { todo ->
+                    Text(text = todo.isDone.toString(), modifier = Modifier.padding(8.dp))
+                }
+            }
+        }
+
     }
 }
 
@@ -83,6 +105,7 @@ fun TodoScreenPreview() {
             onTodoTextChange = {},
             onAddTodoButtonClick = {},
             onDeleteTodoButtonClick = {},
+            onUpdateTodoButtonClick = {},
             todoList = listOf(
                 Todo(title = "first"),
                 Todo(title = "second"),

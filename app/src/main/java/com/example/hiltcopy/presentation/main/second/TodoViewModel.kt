@@ -79,6 +79,19 @@ class TodoViewModel @Inject constructor(
         postSideEffect(TodoSideEffect.Toast(message = "Todo 삭제 완료!"))
     }
 
+    fun updateTodo() = intent {
+        val updatedTodo = Todo(id = state.todoText.toInt(), title = "300", isDone = true)
+        todoDao.updateTodoById(id = updatedTodo.id, title = updatedTodo.title, isDone = updatedTodo.isDone)
+        reduce {
+            state.copy(
+                todoList = state.todoList.map {
+                    if (it.id == updatedTodo.id) updatedTodo else it
+                }
+            )
+            state.copy(todoText = "")
+        }
+    }
+
 }
 
 // ViewModel에서 관리할 상태

@@ -15,6 +15,20 @@ interface TodoDao {
     @Delete
     suspend fun delete(todo: Todo)
 
-    @Query("SELECT * FROM todo_table ORDER BY id DESC")
+    //Flow는 이미 계속 비동기로 상태를 관찰하기 때문에 비동기함수인 suspend를 붙히면 안됨
+    @Query("""
+        SELECT * 
+        FROM todo_table 
+        ORDER BY id DESC
+        """)
     fun getAllTodos(): Flow<List<Todo>>
+
+    @Query("""
+        UPDATE todo_table 
+        SET title = :title, isDone = :isDone 
+        WHERE id = :id
+        """)
+    suspend fun updateTodoById(id: Int, title: String, isDone: Boolean)
+
+
 }
